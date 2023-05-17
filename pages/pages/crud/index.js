@@ -398,6 +398,7 @@ const Crud = () => {
                             <label htmlFor="description">Company Name</label>
                             <InputText id="description" value={product.description} onChange={(e) => onInputChange(e, 'description')} required rows={3} cols={20} />
                         </div>
+                        <br/>
 
                         <div className="formgrid grid">
                             <div className="field col">
@@ -430,6 +431,12 @@ const Crud = () => {
                             </div>
                         </div>
 
+                        <div className="field">
+                            <label htmlFor="description">Communications</label>  
+                            <InputText id="description" value={product.description} onChange={(e) => onInputChange(e, 'description')} required rows={3} cols={20} />
+                        </div>
+                        <br/>
+
                         <div className="formgrid grid">
                             <div className="field col">
                             <label htmlFor="price">Interest Level</label>
@@ -451,10 +458,6 @@ const Crud = () => {
                             </div>
                         </div>
                         {/* Designations */}
-                        <div className="field">
-                            <label htmlFor="description">Communications</label>  
-                            <InputText id="description" value={product.description} onChange={(e) => onInputChange(e, 'description')} required rows={3} cols={20} />
-                        </div>
                     </Dialog>
 
                     <Dialog visible={deleteProductDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteProductDialogFooter} onHide={hideDeleteProductDialog}>
