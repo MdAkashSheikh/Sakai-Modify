@@ -11,6 +11,7 @@ import { Rating } from 'primereact/rating';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import { classNames } from 'primereact/utils';
+import { Dropdown } from 'primereact/dropdown';
 import React, { useEffect, useRef, useState } from 'react';
 import { ProductService } from '../../../demo/service/ProductService';
 
@@ -36,6 +37,7 @@ const Crud = () => {
     const [selectedProducts, setSelectedProducts] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
+    const [interestL, setInterestL] = useState(null);
     const toast = useRef(null);
     const dt = useRef(null);
 
@@ -167,6 +169,48 @@ const Crud = () => {
 
         setProduct(_product);
     };
+
+    const groupedCities = [
+        {
+          label: 'Interest Level',
+          code: 'IL',
+          items: [
+            { label: '1', value: 'One' },
+            { label: '2', value: 'Two' },
+            { label: '3', value: 'Three' },
+            { label: '4', value: 'Four' },
+            { label: '5', value: 'Five' },
+          ],
+        }
+      ];
+      
+      const groupedDesig = [
+        {
+          label: 'Interest Level',
+          code: 'IL',
+          items: [
+            { label: '1', value: 'One' },
+            { label: '2', value: 'Two' },
+            { label: '3', value: 'Three' },
+            { label: '4', value: 'Four' },
+            { label: '5', value: 'Five' },
+          ],
+        }
+      ];
+
+      const groupedCpmany = [
+        {
+          label: 'Comany Type',
+          code: 'IL',
+          items: [
+            { label: '1', value: 'One' },
+            { label: '2', value: 'Two' },
+            { label: '3', value: 'Three' },
+            { label: '4', value: 'Four' },
+            { label: '5', value: 'Five' },
+          ],
+        }
+      ];
 
     const leftToolbarTemplate = () => {
         return (
@@ -323,7 +367,7 @@ const Crud = () => {
                         responsiveLayout="scroll"
                     >
                         <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column>
-                        <Column field="code" header="Code" sortable body={codeBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column>
+                        {/* <Column field="code" header="Code" sortable body={codeBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column> */}
                         <Column field="name" header="Name" sortable body={nameBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column>
                         <Column field="phone" header="phone" sortable body={phoneBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column>
                         <Column header="Image" body={imageBodyTemplate}></Column>
@@ -351,41 +395,65 @@ const Crud = () => {
                             <InputText id="email" value={product.email} onChange={(e) => onInputChange(e, 'email')} />
                         </div>
                         <div className="field">
-                            <label htmlFor="description">Description</label>
-                            <InputTextarea id="description" value={product.description} onChange={(e) => onInputChange(e, 'description')} required rows={3} cols={20} />
+                            <label htmlFor="description">Company Name</label>
+                            <InputText id="description" value={product.description} onChange={(e) => onInputChange(e, 'description')} required rows={3} cols={20} />
                         </div>
 
-                        <div className="field">
-                            <label className="mb-3">Category</label>
-                            <div className="formgrid grid">
-                                <div className="field-radiobutton col-6">
-                                    <RadioButton inputId="category1" name="category" value="Accessories" onChange={onCategoryChange} checked={product.category === 'Accessories'} />
-                                    <label htmlFor="category1">Accessories</label>
-                                </div>
-                                <div className="field-radiobutton col-6">
-                                    <RadioButton inputId="category2" name="category" value="Clothing" onChange={onCategoryChange} checked={product.category === 'Clothing'} />
-                                    <label htmlFor="category2">Clothing</label>
-                                </div>
-                                <div className="field-radiobutton col-6">
-                                    <RadioButton inputId="category3" name="category" value="Electronics" onChange={onCategoryChange} checked={product.category === 'Electronics'} />
-                                    <label htmlFor="category3">Electronics</label>
-                                </div>
-                                <div className="field-radiobutton col-6">
-                                    <RadioButton inputId="category4" name="category" value="Fitness" onChange={onCategoryChange} checked={product.category === 'Fitness'} />
-                                    <label htmlFor="category4">Fitness</label>
-                                </div>
+                        <div className="formgrid grid">
+                            <div className="field col">
+                                <label htmlFor="price">Company Type</label>
+                                <Dropdown
+                                    value={interestL}
+                                    onChange={(e) => setInterestL(e.value)}
+                                    options={groupedCities}
+                                    optionLabel="label"
+                                    optionGroupLabel="label"
+                                    optionGroupChildren="items"
+                                    // optionGroupTemplate={groupedItemTemplate}
+                                    className="w-full md:w-14rem"
+                                    placeholder="Select Company Type"
+                                />
+                            </div>
+                            <div className="field col">
+                                <label htmlFor="price">Designation</label>
+                                <Dropdown
+                                    value={interestL}
+                                    onChange={(e) => setInterestL(e.value)}
+                                    options={groupedCities}
+                                    optionLabel="label"
+                                    optionGroupLabel="label"
+                                    optionGroupChildren="items"
+                                    // optionGroupTemplate={groupedItemTemplate}
+                                    className="w-full md:w-14rem"
+                                    placeholder="Select Designation"
+                                />
                             </div>
                         </div>
 
                         <div className="formgrid grid">
                             <div className="field col">
-                                <label htmlFor="price"></label>
-                                <FileUpload mode="basic" accept="image/*" maxFileSize={1000000} label="Import" chooseLabel="Import" className="mr-2 inline-block" />
+                            <label htmlFor="price">Interest Level</label>
+                                <Dropdown
+                                    value={interestL}
+                                    onChange={(e) => setInterestL(e.value)}
+                                    options={groupedCities}
+                                    optionLabel="label"
+                                    optionGroupLabel="label"
+                                    optionGroupChildren="items"
+                                    // optionGroupTemplate={groupedItemTemplate}
+                                    className="w-full md:w-14rem"
+                                    placeholder="Select Interest Level"
+                                />
                             </div>
                             <div className="field col">
-                                <label htmlFor="quantity">Quantity</label>
-                                <InputNumber id="quantity" value={product.quantity} onValueChange={(e) => onInputNumberChange(e, 'quantity')} integeronly="true" />
+                                <label htmlFor="price">Image</label><br/>
+                                <FileUpload mode="basic" accept="image/*" maxFileSize={1000000} label="Import" chooseLabel="Import" className="mr-2 inline-block" />
                             </div>
+                        </div>
+                        {/* Designations */}
+                        <div className="field">
+                            <label htmlFor="description">Communications</label>  
+                            <InputText id="description" value={product.description} onChange={(e) => onInputChange(e, 'description')} required rows={3} cols={20} />
                         </div>
                     </Dialog>
 
