@@ -20,12 +20,14 @@ const Crud = () => {
         id: null,
         name: '',
         phone: '',
+        email: '',
         image: null,
         description: '',
-        category: null,
+        companyName: '',
+        designation: '',
         price: 0,
         quantity: 0,
-        rating: 0,
+        interest: 0,
         inventoryStatus: 'INSTOCK'
     };
 
@@ -38,8 +40,11 @@ const Crud = () => {
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
     const [interestL, setInterestL] = useState(null);
+    const [companyT, setCompanyT] = useState(null);
+    const [designation, setDesignation] = useState(null);
     const toast = useRef(null);
     const dt = useRef(null);
+
 
     useEffect(() => {
         ProductService.getProducts().then((data) => setProducts(data));
@@ -70,6 +75,8 @@ const Crud = () => {
 
     const saveProduct = () => {
         setSubmitted(true);
+        console.log("PP1", product)
+        ProductService.postProducts(product.name, product.phone, product.email, product.companyName, product.designation, product.interest);
 
         if (product.name.trim()) {
             let _products = [...products];
@@ -162,55 +169,75 @@ const Crud = () => {
         setProduct(_product);
     };
 
-    const onInputNumberChange = (e, name) => {
+    const onInputNumberChange = (e, number) => {
         const val = e.value || 0;
         let _product = { ...product };
-        _product[`${name}`] = val;
+        _product[`${number}`] = val;
 
         setProduct(_product);
     };
 
-    const groupedCities = [
-        {
-          label: 'Interest Level',
-          code: 'IL',
-          items: [
-            { label: '1', value: 'One' },
-            { label: '2', value: 'Two' },
-            { label: '3', value: 'Three' },
-            { label: '4', value: 'Four' },
-            { label: '5', value: 'Five' },
-          ],
-        }
-      ];
-      
-      const groupedDesig = [
-        {
-          label: 'Interest Level',
-          code: 'IL',
-          items: [
-            { label: '1', value: 'One' },
-            { label: '2', value: 'Two' },
-            { label: '3', value: 'Three' },
-            { label: '4', value: 'Four' },
-            { label: '5', value: 'Five' },
-          ],
-        }
-      ];
+    const onInputEmailChange = (e, email) => {
+        const val = (e.target && e.target.value) || '';
+        let _product = { ...product };
+        _product[`${email}`] = val;
 
-      const groupedCpmany = [
+        setProduct(_product);
+    };
+
+    const onInputCompanyChange = (e, companyName) => {
+        const val = (e.target && e.target.value) || '';
+        let _product = { ...product };
+        _product[`${companyName}`] = val;
+
+        setProduct(_product);
+    };
+
+    const groupedInterestL = [
         {
-          label: 'Comany Type',
-          code: 'IL',
-          items: [
+            label: 'Interest Level',
+            code: 'IL',
+            items: [
             { label: '1', value: 'One' },
             { label: '2', value: 'Two' },
             { label: '3', value: 'Three' },
             { label: '4', value: 'Four' },
             { label: '5', value: 'Five' },
-          ],
+            ],
         }
-      ];
+    ];
+      
+    // const groupedDesignation = [
+    //     {
+    //         label: 'Designation',
+    //         code: 'IL',
+    //         items: [
+    //         { label: 'CEO', value: 'CEO' },
+    //         { label: 'Software Engineer', value: 'Software Engineer' },
+    //         { label: 'Developer', value: 'Developer' },
+    //         { label: 'HR', value: 'HR' },
+    //         ],
+    //     }
+    // ];
+
+    const groupedDesignation = [
+        { name: 'CEO', code: 'CEO' },
+        { name: 'Software Engineer', code: 'SE' },
+        { name: 'Developer', code: 'DEV' },
+        { name: 'HR', code: 'HR' }
+    ];
+
+    const groupedCpmanyT = [
+        {
+            label: 'Comany Type',
+            code: 'IL',
+            items: [
+            { label: 'Software Firm', value: 'Software Firm' },
+            { label: 'Multinational Company', value: 'Multinational Company' },
+            { label: 'Forign Company', value: 'Forign Company' },
+            ],
+        }
+    ];
 
     const leftToolbarTemplate = () => {
         return (
@@ -259,6 +286,15 @@ const Crud = () => {
         );
     };
 
+    const emailBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Email</span>
+                {rowData.email}
+            </>
+        );
+    };
+
     const imageBodyTemplate = (rowData) => {
         return (
             <>
@@ -268,29 +304,29 @@ const Crud = () => {
         );
     };
 
-    const priceBodyTemplate = (rowData) => {
+    const designationBodyTemplate = (rowData) => {
         return (
             <>
-                <span className="p-column-title">Price</span>
-                {formatCurrency(rowData.price)}
+                <span className="p-column-title">Designation</span>
+                {(rowData.designation)}
             </>
         );
     };
 
-    const categoryBodyTemplate = (rowData) => {
+    const companyNameBodyTemplate = (rowData) => {
         return (
             <>
-                <span className="p-column-title">Category</span>
-                {rowData.category}
+                <span className="p-column-title">Company Name</span>
+                {rowData.companyName}
             </>
         );
     };
 
-    const ratingBodyTemplate = (rowData) => {
+    const interestBodyTemplate = (rowData) => {
         return (
             <>
-                <span className="p-column-title">Reviews</span>
-                <Rating value={rowData.rating} readOnly cancel={false} />
+                <span className="p-column-title">Interest Level</span>
+                <Rating value={rowData.interest} readOnly cancel={false} />
             </>
         );
     };
@@ -315,7 +351,7 @@ const Crud = () => {
 
     const header = (
         <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-            <h5 className="m-0">Customer List</h5>
+            <h5 className="m-0 p-column-title">Customer List</h5>
             <span className="block mt-2 md:mt-0 p-input-icon-left">
                 <i className="pi pi-search" />
                 <InputText type="search" onChange={(e) => setGlobalFilter(e.target.value)} placeholder="Search..." />
@@ -341,6 +377,7 @@ const Crud = () => {
             <Button label="Yes" icon="pi pi-check" text onClick={deleteSelectedProducts} />
         </>
     );
+    // console.log("GORU",product);
 
     return (
         <div className="grid crud-demo">
@@ -356,8 +393,8 @@ const Crud = () => {
                         onSelectionChange={(e) => setSelectedProducts(e.value)}
                         dataKey="id"
                         paginator
-                        rows={10}
-                        rowsPerPageOptions={[5, 10, 25]}
+                        rows={5}
+                        rowsPerPageOptions={[5, 10, 25, 50]}
                         className="datatable-responsive"
                         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
@@ -366,15 +403,17 @@ const Crud = () => {
                         header={header}
                         responsiveLayout="scroll"
                     >
-                        <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column>
+                        {/* <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column> */}
                         {/* <Column field="code" header="Code" sortable body={codeBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column> */}
                         <Column field="name" header="Name" sortable body={nameBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column>
-                        <Column field="phone" header="phone" sortable body={phoneBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column>
-                        <Column header="Image" body={imageBodyTemplate}></Column>
-                        <Column field="price" header="Price" body={priceBodyTemplate} sortable></Column>
-                        <Column field="category" header="Category" sortable body={categoryBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
-                        <Column field="rating" header="Reviews" body={ratingBodyTemplate} sortable></Column>
-                        <Column field="inventoryStatus" header="Status" body={statusBodyTemplate} sortable headerStyle={{ minWidth: '10rem' }}></Column>
+                        <Column field="phone" header="Phone" body={phoneBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
+                        <Column field="email" header="Email" body={emailBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column>
+                        <Column field="designation" header="Designation" body={designationBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
+                        <Column field="companyName" header="Company Name" body={companyNameBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
+                        <Column field="interest" header="Interest Level" body={interestBodyTemplate} sortable></Column>
+                        {/* <Column field="inventoryStatus" header="Status" body={statusBodyTemplate} sortable headerStyle={{ minWidth: '10rem' }}></Column> */}
+                        {/* <Column field="designation" header="designation" body={designationBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column> */}
+                        <Column header="Image" body={imageBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
                         <Column body={actionBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
                     </DataTable>
 
@@ -387,16 +426,16 @@ const Crud = () => {
                         </div>
                         <div className="field">
                             <label htmlFor="phone">Phone</label>
-                            <InputText id="phone" value={product.phone} onChange={(e) => onInputChange(e, 'phone')} required  className={classNames({ 'p-invalid': submitted && !product.phone })} />
+                            <InputText id="phone" value={product.phone} onChange={(e) => onInputNumberChange(e, 'phone')} required  className={classNames({ 'p-invalid': submitted && !product.phone })} />
                             {submitted && !product.phone && <small className="p-invalid">Phone is required.</small>}
                         </div>
                         <div className="field">
                             <label htmlFor="email">Email</label>
-                            <InputText id="email" value={product.email} onChange={(e) => onInputChange(e, 'email')} />
+                            <InputText id="email" value={product.email} onChange={(e) => onInputEmailChange(e, 'email')} />
                         </div>
                         <div className="field">
-                            <label htmlFor="description">Company Name</label>
-                            <InputText id="description" value={product.description} onChange={(e) => onInputChange(e, 'description')} required rows={3} cols={20} />
+                            <label htmlFor="companyName">Company Name</label>
+                            <InputText id="companyName" value={product.companyName} onChange={(e) => onInputCompanyChange(e, 'companyName')} required rows={3} cols={20} />
                         </div>
                         <br/>
 
@@ -404,9 +443,9 @@ const Crud = () => {
                             <div className="field col">
                                 <label htmlFor="price">Company Type</label>
                                 <Dropdown
-                                    value={interestL}
-                                    onChange={(e) => setInterestL(e.value)}
-                                    options={groupedCities}
+                                    value={companyT}
+                                    onChange={(e) => setCompanyT(e.value)}
+                                    options={groupedCpmanyT}
                                     optionLabel="label"
                                     optionGroupLabel="label"
                                     optionGroupChildren="items"
@@ -418,22 +457,23 @@ const Crud = () => {
                             <div className="field col">
                                 <label htmlFor="price">Designation</label>
                                 <Dropdown
-                                    value={interestL}
-                                    onChange={(e) => setInterestL(e.value)}
-                                    options={groupedCities}
-                                    optionLabel="label"
-                                    optionGroupLabel="label"
-                                    optionGroupChildren="items"
+                                    value={designation}
+                                    onChange={(e) => setDesignation(e.value)}
+                                    options={groupedDesignation}
+                                    optionLabel="name"
+                                    showClear
+                                    // optionGroupLabel="label"
+                                    // optionGroupChildren="items"
                                     // optionGroupTemplate={groupedItemTemplate}
                                     className="w-full md:w-14rem"
                                     placeholder="Select Designation"
                                 />
                             </div>
-                        </div>
+                        </div><br/>
 
                         <div className="field">
                             <label htmlFor="description">Communications</label>  
-                            <InputText id="description" value={product.description} onChange={(e) => onInputChange(e, 'description')} required rows={3} cols={20} />
+                            <InputTextarea id="description" value={product.description} onChange={(e) => onInputChange(e, 'description')} required rows={3} cols={20} />
                         </div>
                         <br/>
 
@@ -443,7 +483,7 @@ const Crud = () => {
                                 <Dropdown
                                     value={interestL}
                                     onChange={(e) => setInterestL(e.value)}
-                                    options={groupedCities}
+                                    options={groupedInterestL}
                                     optionLabel="label"
                                     optionGroupLabel="label"
                                     optionGroupChildren="items"

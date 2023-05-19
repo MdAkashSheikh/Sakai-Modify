@@ -50,15 +50,15 @@ const AppMenu = () => {
         
                 {
                     label: 'Setting',
-                    icon: 'pi pi-fw pi-bookmark',
+                    icon: 'pi pi-fw pi-cog',
                     items: [
                         {
-                            label: 'Submenu 1.1',
-                            icon: 'pi pi-fw pi-bookmark',
+                            label: 'Set Submenu',
+                            icon: 'pi pi-fw pi-angle-double-down',
                             items: [
-                                { label: 'Submenu 1.1.1', icon: 'pi pi-fw pi-bookmark' },
-                                { label: 'Submenu 1.1.2', icon: 'pi pi-fw pi-bookmark' },
-                                { label: 'Submenu 1.1.3', icon: 'pi pi-fw pi-bookmark' }
+                                { label: 'Set Company Type', icon: 'pi pi-fw pi-cog' },
+                                { label: 'Set Designation', icon: 'pi pi-fw pi-cog' },
+                                // { label: 'Submenu 1.1.3', icon: 'pi pi-fw pi-bookmark' }
                             ]
                         }
                     ]

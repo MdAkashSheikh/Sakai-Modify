@@ -366,7 +366,7 @@ const Dashboard = () => {
                 >
                     <div>
                         <div className="text-blue-100 font-medium text-xl mt-2 mb-3">This is Nitto CRM</div>
-                        <div className="text-white font-medium text-5xl">Developed by Akash</div>
+                        <div className="text-white font-medium text-5xl">Developed by Nitto Digital</div>
                     </div>
                 </div>
             </div>
