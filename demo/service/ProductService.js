@@ -28,10 +28,10 @@ export const ProductService = {
         formData.append("formComm", formComm);
         formData.append("photo", file);
 
-        const result = await axios.post(
+        const result = await fetch(
             "http://36.255.69.40:5000/post",
-            products
-          );
+            formData
+        );
     },
 
     getProductsWithOrdersSmall() {

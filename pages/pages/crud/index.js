@@ -2,16 +2,14 @@ import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
 import { Dialog } from 'primereact/dialog';
+import { Dropdown } from 'primereact/dropdown';
 import { FileUpload } from 'primereact/fileupload';
-import { InputNumber } from 'primereact/inputnumber';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
-import { RadioButton } from 'primereact/radiobutton';
 import { Rating } from 'primereact/rating';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import { classNames } from 'primereact/utils';
-import { Dropdown } from 'primereact/dropdown';
 import React, { useEffect, useRef, useState } from 'react';
 import { ProductService } from '../../../demo/service/ProductService';
 
@@ -170,7 +168,7 @@ const Crud = () => {
     };
 
     const onInputNumberChange = (e, number) => {
-        const val = e.value || 0;
+        const val = (e.target && e.target.value) || '';
         let _product = { ...product };
         _product[`${number}`] = val;
 
@@ -193,18 +191,32 @@ const Crud = () => {
         setProduct(_product);
     };
 
+    const onInterestLChange = (e) => {
+        let _product = { ...product };
+        _product['interest'] = e.value;
+        setProduct(_product);
+    };
+
+    const onDesignationChange = (e) => {
+        let _product = { ...product };
+        _product['designation'] = e.value;
+        setProduct(_product);
+    };
+
+    const onCompanyTChange = (e) => {
+        // const val = (e.target && e.target.value) || '';
+        let _product = { ...product };
+        _product['companyt'] = e.value;
+        setProduct(_product);
+    };
+    
+
     const groupedInterestL = [
-        {
-            label: 'Interest Level',
-            code: 'IL',
-            items: [
-            { label: '1', value: 'One' },
-            { label: '2', value: 'Two' },
-            { label: '3', value: 'Three' },
-            { label: '4', value: 'Four' },
-            { label: '5', value: 'Five' },
-            ],
-        }
+            { label: 'One', value: '1' },
+            { label: 'Two', value: '2' },
+            { label: 'Three', value: '3' },
+            { label: 'Four', value: '4' },
+            { label: 'Five', value: '5' },
     ];
       
     // const groupedDesignation = [
@@ -221,22 +233,16 @@ const Crud = () => {
     // ];
 
     const groupedDesignation = [
-        { name: 'CEO', code: 'CEO' },
-        { name: 'Software Engineer', code: 'SE' },
-        { name: 'Developer', code: 'DEV' },
-        { name: 'HR', code: 'HR' }
+        { name: 'CEO', value: 'CEO' },
+        { name: 'Software Engineer', value: 'Software Engineer' },
+        { name: 'Developer', value: 'Developer' },
+        { name: 'HR', value: 'HR' }
     ];
 
     const groupedCpmanyT = [
-        {
-            label: 'Comany Type',
-            code: 'IL',
-            items: [
-            { label: 'Software Firm', value: 'Software Firm' },
-            { label: 'Multinational Company', value: 'Multinational Company' },
-            { label: 'Forign Company', value: 'Forign Company' },
-            ],
-        }
+        { label: 'Software Firm', value: 'Software Firm' },
+        { label: 'Multinational Company', value: 'Multinational Company' },
+        { label: 'Forign Company', value: 'Forign Company' },
     ];
 
     const leftToolbarTemplate = () => {
@@ -393,7 +399,7 @@ const Crud = () => {
                         onSelectionChange={(e) => setSelectedProducts(e.value)}
                         dataKey="id"
                         paginator
-                        rows={5}
+                        rows={10}
                         rowsPerPageOptions={[5, 10, 25, 50]}
                         className="datatable-responsive"
                         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
@@ -443,12 +449,14 @@ const Crud = () => {
                             <div className="field col">
                                 <label htmlFor="price">Company Type</label>
                                 <Dropdown
-                                    value={companyT}
-                                    onChange={(e) => setCompanyT(e.value)}
+                                    value={product}
+                                    inputId='companyt'
+                                    onChange={(e) => onCompanyTChange(e.target.value)}
                                     options={groupedCpmanyT}
                                     optionLabel="label"
-                                    optionGroupLabel="label"
-                                    optionGroupChildren="items"
+                                    showClear
+                                    // optionGroupLabel="label"
+                                    // optionGroupChildren="items"
                                     // optionGroupTemplate={groupedItemTemplate}
                                     className="w-full md:w-14rem"
                                     placeholder="Select Company Type"
@@ -457,8 +465,9 @@ const Crud = () => {
                             <div className="field col">
                                 <label htmlFor="price">Designation</label>
                                 <Dropdown
-                                    value={designation}
-                                    onChange={(e) => setDesignation(e.value)}
+                                    value={product}
+                                    name='designation'
+                                    onChange={(e) => onDesignationChange(e)}
                                     options={groupedDesignation}
                                     optionLabel="name"
                                     showClear
@@ -481,12 +490,14 @@ const Crud = () => {
                             <div className="field col">
                             <label htmlFor="price">Interest Level</label>
                                 <Dropdown
-                                    value={interestL}
-                                    onChange={(e) => setInterestL(e.value)}
+                                    value={product}
+                                    name='interest'
+                                    onChange={(e) => onInterestLChange(e)}
                                     options={groupedInterestL}
                                     optionLabel="label"
-                                    optionGroupLabel="label"
-                                    optionGroupChildren="items"
+                                    showClear
+                                    // optionGroupLabel="label"
+                                    // optionGroupChildren="items"
                                     // optionGroupTemplate={groupedItemTemplate}
                                     className="w-full md:w-14rem"
                                     placeholder="Select Interest Level"
