@@ -23,6 +23,7 @@ const Crud = () => {
         description: '',
         companyName: '',
         designation: '',
+        companyType: '',
         price: 0,
         quantity: 0,
         interest: 0,
@@ -206,7 +207,7 @@ const Crud = () => {
     const onCompanyTChange = (e) => {
         // const val = (e.target && e.target.value) || '';
         let _product = { ...product };
-        _product['companyt'] = e.value;
+        _product['companyType'] = e.value;
         setProduct(_product);
     };
     
@@ -449,9 +450,9 @@ const Crud = () => {
                             <div className="field col">
                                 <label htmlFor="price">Company Type</label>
                                 <Dropdown
-                                    value={product}
-                                    inputId='companyt'
-                                    onChange={(e) => onCompanyTChange(e.target.value)}
+                                    value={product.companyType}
+                                    name='companyt'
+                                    onChange={(e) => onCompanyTChange(e)}
                                     options={groupedCpmanyT}
                                     optionLabel="label"
                                     showClear
@@ -465,7 +466,7 @@ const Crud = () => {
                             <div className="field col">
                                 <label htmlFor="price">Designation</label>
                                 <Dropdown
-                                    value={product}
+                                    value={product.designation}
                                     name='designation'
                                     onChange={(e) => onDesignationChange(e)}
                                     options={groupedDesignation}
@@ -490,7 +491,7 @@ const Crud = () => {
                             <div className="field col">
                             <label htmlFor="price">Interest Level</label>
                                 <Dropdown
-                                    value={product}
+                                    value={product.interest}
                                     name='interest'
                                     onChange={(e) => onInterestLChange(e)}
                                     options={groupedInterestL}
