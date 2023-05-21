@@ -23,6 +23,8 @@ const Crud = () => {
         description: '',
         companyName: '',
         designation: '',
+        companyType: '',
+        communication: '',
         price: 0,
         quantity: 0,
         interest: 0,
@@ -40,6 +42,7 @@ const Crud = () => {
     const [interestL, setInterestL] = useState(null);
     const [companyT, setCompanyT] = useState(null);
     const [designation, setDesignation] = useState(null);
+    const [file, setFile] = useState();
     const toast = useRef(null);
     const dt = useRef(null);
 
@@ -74,7 +77,17 @@ const Crud = () => {
     const saveProduct = () => {
         setSubmitted(true);
         console.log("PP1", product)
-        ProductService.postProducts(product.name, product.phone, product.email, product.companyName, product.designation, product.interest);
+        ProductService.postProducts(
+            product.name, 
+            product.phone, 
+            product.email, 
+            product.companyName, 
+            product.designation, 
+            product.interest, 
+            product.companyType, 
+            product.communication, 
+            file
+        );
 
         if (product.name.trim()) {
             let _products = [...products];
@@ -206,7 +219,7 @@ const Crud = () => {
     const onCompanyTChange = (e) => {
         // const val = (e.target && e.target.value) || '';
         let _product = { ...product };
-        _product['companyt'] = e.value;
+        _product['companyType'] = e.value;
         setProduct(_product);
     };
     
@@ -447,11 +460,11 @@ const Crud = () => {
 
                         <div className="formgrid grid">
                             <div className="field col">
-                                <label htmlFor="price">Company Type</label>
+                                <label htmlFor="companyt">Company Type</label>
                                 <Dropdown
-                                    value={product}
-                                    inputId='companyt'
-                                    onChange={(e) => onCompanyTChange(e.target.value)}
+                                    value={product.companyType}
+                                    name='companyT'
+                                    onChange={(e) => onCompanyTChange(e)}
                                     options={groupedCpmanyT}
                                     optionLabel="label"
                                     showClear
@@ -463,9 +476,9 @@ const Crud = () => {
                                 />
                             </div>
                             <div className="field col">
-                                <label htmlFor="price">Designation</label>
+                                <label htmlFor="designation">Designation</label>
                                 <Dropdown
-                                    value={product}
+                                    value={product.designation}
                                     name='designation'
                                     onChange={(e) => onDesignationChange(e)}
                                     options={groupedDesignation}
@@ -488,9 +501,9 @@ const Crud = () => {
 
                         <div className="formgrid grid">
                             <div className="field col">
-                            <label htmlFor="price">Interest Level</label>
+                            <label htmlFor="interest">Interest Level</label>
                                 <Dropdown
-                                    value={product}
+                                    value={product.interest}
                                     name='interest'
                                     onChange={(e) => onInterestLChange(e)}
                                     options={groupedInterestL}
@@ -505,7 +518,13 @@ const Crud = () => {
                             </div>
                             <div className="field col">
                                 <label htmlFor="price">Image</label><br/>
-                                <FileUpload mode="basic" accept="image/*" maxFileSize={1000000} label="Import" chooseLabel="Import" className="mr-2 inline-block" />
+                                <FileUpload mode="basic" accept="image/*" maxFileSize={1000000} customUpload={true} auto={true} uploadHandler={(e)=> { 
+                                    // console.log("EEEEE",e.files)
+                                    // console.log(e.target.files)
+                                    setFile(e.files[0]) 
+                                }} 
+                                    label="Import" chooseLabel="Import" 
+                                    className="mr-2 inline-block" />
                             </div>
                         </div>
                         {/* Designations */}
