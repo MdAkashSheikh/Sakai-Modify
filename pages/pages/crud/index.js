@@ -463,7 +463,7 @@ const Crud = () => {
                                 <label htmlFor="companyt">Company Type</label>
                                 <Dropdown
                                     value={product.companyType}
-                                    name='companyT'
+                                    name='companyType'
                                     onChange={(e) => onCompanyTChange(e)}
                                     options={groupedCpmanyT}
                                     optionLabel="label"
