@@ -11,6 +11,8 @@ import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import { classNames } from 'primereact/utils';
 import React, { useEffect, useRef, useState } from 'react';
+import { PhotoProvider, PhotoView } from 'react-photo-view';
+import { Image } from 'primereact/image';
 import { ProductService } from '../../../demo/service/ProductService';
 
 const Crud = () => {
@@ -20,11 +22,10 @@ const Crud = () => {
         phone: '',
         email: '',
         image: null,
-        description: '',
-        companyName: '',
+        company: '',
         designation: '',
         companyType: '',
-        communication: '',
+        comm: '',
         price: 0,
         quantity: 0,
         interest: 0,
@@ -39,17 +40,15 @@ const Crud = () => {
     const [selectedProducts, setSelectedProducts] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
-    const [interestL, setInterestL] = useState(null);
-    const [companyT, setCompanyT] = useState(null);
-    const [designation, setDesignation] = useState(null);
     const [file, setFile] = useState();
     const toast = useRef(null);
     const dt = useRef(null);
+    const [toggleRefresh, setTogleRefresh] = useState(false);
 
 
     useEffect(() => {
         ProductService.getProducts().then((data) => setProducts(data));
-    }, []);
+    }, [toggleRefresh]);
 
     const formatCurrency = (value) => {
         return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
@@ -76,39 +75,25 @@ const Crud = () => {
 
     const saveProduct = () => {
         setSubmitted(true);
+
         console.log("PP1", product)
         ProductService.postProducts(
             product.name, 
             product.phone, 
             product.email, 
-            product.companyName, 
+            product.company, 
             product.designation, 
             product.interest, 
             product.companyType, 
-            product.communication, 
+            product.comm, 
             file
-        );
-
-        if (product.name.trim()) {
-            let _products = [...products];
-            let _product = { ...product };
-            if (product.id) {
-                const index = findIndexById(product.id);
-
-                _products[index] = _product;
-                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Product Updated', life: 3000 });
-            } else {
-                _product.id = createId();
-                _product.code = createId();
-                _product.image = 'product-placeholder.svg';
-                _products.push(_product);
-                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Product Created', life: 3000 });
-            }
-
-            setProducts(_products);
+        ).then(()=>{
+            setTogleRefresh(!toggleRefresh)
             setProductDialog(false);
-            setProduct(emptyProduct);
-        }
+        });
+
+
+        
     };
 
     const editProduct = (product) => {
@@ -122,11 +107,14 @@ const Crud = () => {
     };
 
     const deleteProduct = () => {
-        let _products = products.filter((val) => val.id !== product.id);
-        setProducts(_products);
-        setDeleteProductDialog(false);
-        setProduct(emptyProduct);
-        toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Product Deleted', life: 3000 });
+        ProductService.deleteProduct(product._id).then(()=>{
+            setTogleRefresh(!toggleRefresh);
+            setDeleteProductDialog(false);
+            setProduct(emptyProduct);
+            toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Product Deleted', life: 3000 });
+        });
+
+        
     };
 
     const findIndexById = (id) => {
@@ -150,7 +138,7 @@ const Crud = () => {
         return id;
     };
 
-    const exportCSV = () => {
+    const exportCSV = () => {company
         dt.current.exportCSV();
     };
 
@@ -172,10 +160,10 @@ const Crud = () => {
         setProduct(_product);
     };
 
-    const onInputChange = (e, name) => {
+    const onInputChange = (e) => {
         const val = (e.target && e.target.value) || '';
         let _product = { ...product };
-        _product[`${name}`] = val;
+        _product['name'] = val;
 
         setProduct(_product);
     };
@@ -188,18 +176,26 @@ const Crud = () => {
         setProduct(_product);
     };
 
-    const onInputEmailChange = (e, email) => {
+    const onInputEmailChange = (e) => {
         const val = (e.target && e.target.value) || '';
         let _product = { ...product };
-        _product[`${email}`] = val;
+        _product['email'] = val;
 
         setProduct(_product);
     };
 
-    const onInputCompanyChange = (e, companyName) => {
+    const onInputCompanyChange = (e) => {
         const val = (e.target && e.target.value) || '';
         let _product = { ...product };
-        _product[`${companyName}`] = val;
+        _product['company'] = val;
+
+        setProduct(_product);
+    };
+
+    const onCommunicationChange = (e) => {
+        const val = (e.target && e.target.value) || '';
+        let _product = { ...product };
+        _product['comm'] = val;
 
         setProduct(_product);
     };
@@ -314,11 +310,22 @@ const Crud = () => {
         );
     };
 
+    const communicationBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Communications</span>
+                {rowData.comm}
+            </>
+        );
+    };
+
+
     const imageBodyTemplate = (rowData) => {
         return (
             <>
                 <span className="p-column-title">Image</span>
-                <img src={`/demo/images/product/${rowData.image}`} alt={rowData.image} className="shadow-2" width="100" />
+                <Image src={"http://36.255.69.40:5000/image/" + rowData.image}  alt="Image" height={60} width={120} preview />
+
             </>
         );
     };
@@ -336,7 +343,7 @@ const Crud = () => {
         return (
             <>
                 <span className="p-column-title">Company Name</span>
-                {rowData.companyName}
+                {rowData.company}
             </>
         );
     };
@@ -400,7 +407,7 @@ const Crud = () => {
 
     return (
         <div className="grid crud-demo">
-            <div className="col-12">
+            <div className="col-14">
                 <div className="card">
                     <Toast ref={toast} />
                     <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar>
@@ -428,10 +435,10 @@ const Crud = () => {
                         <Column field="phone" header="Phone" body={phoneBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
                         <Column field="email" header="Email" body={emailBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column>
                         <Column field="designation" header="Designation" body={designationBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
-                        <Column field="companyName" header="Company Name" body={companyNameBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
+                        <Column field="company" header="Company Name" body={companyNameBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
                         <Column field="interest" header="Interest Level" body={interestBodyTemplate} sortable></Column>
                         {/* <Column field="inventoryStatus" header="Status" body={statusBodyTemplate} sortable headerStyle={{ minWidth: '10rem' }}></Column> */}
-                        {/* <Column field="designation" header="designation" body={designationBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column> */}
+                        <Column field="comm" header="Communication" body={communicationBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
                         <Column header="Image" body={imageBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
                         <Column body={actionBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
                     </DataTable>
@@ -440,7 +447,7 @@ const Crud = () => {
                         {product.image && <img src={`/demo/images/product/${product.image}`} alt={product.image} width="150" className="mt-0 mx-auto mb-5 block shadow-2" />}
                         <div className="field">
                             <label htmlFor="name">Name</label>
-                            <InputText id="name" value={product.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !product.name })} />
+                            <InputText id="name" value={product.name} onChange={(e) => onInputChange(e)} required autoFocus className={classNames({ 'p-invalid': submitted && !product.name })} />
                             {submitted && !product.name && <small className="p-invalid">Name is required.</small>}
                         </div>
                         <div className="field">
@@ -450,11 +457,11 @@ const Crud = () => {
                         </div>
                         <div className="field">
                             <label htmlFor="email">Email</label>
-                            <InputText id="email" value={product.email} onChange={(e) => onInputEmailChange(e, 'email')} />
+                            <InputText id="email" value={product.email} onChange={(e) => onInputEmailChange(e)} />
                         </div>
                         <div className="field">
                             <label htmlFor="companyName">Company Name</label>
-                            <InputText id="companyName" value={product.companyName} onChange={(e) => onInputCompanyChange(e, 'companyName')} required rows={3} cols={20} />
+                            <InputText id="companyName" value={product.companyName} onChange={(e) => onInputCompanyChange(e,)}/>
                         </div>
                         <br/>
 
@@ -494,8 +501,8 @@ const Crud = () => {
                         </div><br/>
 
                         <div className="field">
-                            <label htmlFor="description">Communications</label>  
-                            <InputTextarea id="description" value={product.description} onChange={(e) => onInputChange(e, 'description')} required rows={3} cols={20} />
+                            <label htmlFor="communication">Communications</label>  
+                            <InputTextarea id="communication" value={product.comm} onChange={(e) => onCommunicationChange(e)} />
                         </div>
                         <br/>
 
@@ -518,9 +525,7 @@ const Crud = () => {
                             </div>
                             <div className="field col">
                                 <label htmlFor="price">Image</label><br/>
-                                <FileUpload mode="basic" accept="image/*" maxFileSize={1000000} customUpload={true} auto={true} uploadHandler={(e)=> { 
-                                    // console.log("EEEEE",e.files)
-                                    // console.log(e.target.files)
+                                <FileUpload mode="basic" accept="image/*" maxFileSize={1000000} customUpload auto uploadHandler={(e)=> { 
                                     setFile(e.files[0]) 
                                 }} 
                                     label="Import" chooseLabel="Import" 
