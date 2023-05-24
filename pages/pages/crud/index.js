@@ -138,7 +138,7 @@ const Crud = () => {
         return id;
     };
 
-    const exportCSV = () => {company
+    const exportCSV = () => {
         dt.current.exportCSV();
     };
 
@@ -529,7 +529,11 @@ const Crud = () => {
                                     setFile(e.files[0]) 
                                 }} 
                                     label="Import" chooseLabel="Import" 
-                                    className="mr-2 inline-block" />
+                                    // className="mr-2 inline-block"
+                                    required 
+                                    className={classNames({ 'p-invalid': submitted && !product.file })}  
+                                    />
+                                    {submitted && !product.phone && <small className="p-invalid">image is required.</small>}
                             </div>
                         </div>
                         {/* Designations */}
