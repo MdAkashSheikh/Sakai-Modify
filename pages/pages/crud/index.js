@@ -76,22 +76,26 @@ const Crud = () => {
     const saveProduct = () => {
         setSubmitted(true);
 
-        console.log("PP1", product)
-        ProductService.postProducts(
-            product.name, 
-            product.phone, 
-            product.email, 
-            product.company, 
-            product.designation, 
-            product.interest, 
-            product.companyType, 
-            product.comm, 
-            file
-        ).then(()=>{
-            setTogleRefresh(!toggleRefresh)
-            setProductDialog(false);
-        });
+        console.log("PP1", product);
+        if((product.name && product.phone) && file ) {
+            ProductService.postProducts(
+                product.name, 
+                product.phone, 
+                product.email, 
+                product.company, 
+                product.designation, 
+                product.interest, 
+                product.companyType, 
+                product.comm, 
+                file
+            ).then(()=>{
+                setTogleRefresh(!toggleRefresh)
+                setProductDialog(false);
+            });
+    
+        }
 
+       
 
         
     };
@@ -525,15 +529,15 @@ const Crud = () => {
                             </div>
                             <div className="field col">
                                 <label htmlFor="price">Image</label><br/>
-                                <FileUpload mode="basic" accept="image/*" maxFileSize={1000000} customUpload auto uploadHandler={(e)=> { 
+                                <FileUpload required mode="basic" accept="image/*" maxFileSize={1000000} customUpload auto uploadHandler={(e)=> { 
                                     setFile(e.files[0]) 
                                 }} 
                                     label="Import" chooseLabel="Import" 
                                     // className="mr-2 inline-block"
-                                    required 
-                                    className={classNames({ 'p-invalid': submitted && !product.file })}  
+                                    
+                                    className={classNames({ 'p-invalid': submitted && !file })}  
                                     />
-                                    {submitted && !product.phone && <small className="p-invalid">image is required.</small>}
+                                    {submitted && !file && <small className="p-invalid">image is required.</small>}
                             </div>
                         </div>
                         {/* Designations */}
