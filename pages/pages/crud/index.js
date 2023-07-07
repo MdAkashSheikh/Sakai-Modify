@@ -433,7 +433,7 @@ const Crud = () => {
                         header={header}
                         responsiveLayout="scroll"
                     >
-                        {/* <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column> */}
+                        <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column>
                         {/* <Column field="code" header="Code" sortable body={codeBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column> */}
                         <Column field="name" header="Name" sortable body={nameBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column>
                         <Column field="phone" header="Phone" body={phoneBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
